@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<div class = "wrap">
+<div id = "test" class = "inside">
+<img src="pics/updated_dinner_good.png" style="position: absolute; top: 80px; left: 0px;"  height="779px" width="1360px"/>
+
+<head>
+	<meta charset="utf-8">
+	<title>DataVis Project</title>
+	<meta name="description" content="Dinner Selection">
+	<meta name="author" content="Northwestern University">
+	<link rel="stylesheet" href="style/dinner.css" />
+	<link rel="stylesheet" href="style/sunburst.css" />
+	<link rel="stylesheet" href="style/template.css" />
+</head>
+
+<body onload="pageIsLoaded()">
+	<div id="mheader"></div>
+    <div id="nwcontent">
+        <div>
+            <p id="clabel1" style="text-align:center;">&nbsp;</p>
+            <div id="chart1" class="chartarea" style = "position: absolute; top: 480px; left: 770px;"></div>
+            <div id="chart2" class="chartarea" style = "position: absolute; top: 100px; left: 650px;"></div>
+            <div id="chart3" class="chartarea" style = "position: absolute; top: 380px; left: 670px;"></div>
+        </div>
+    </div>
+    <div id="mfooter"></div>
+    <script src="js/d3.js"></script>
+    <script src="js/variable_sunburst.js"></script>
+    <script src="js/d3wrapper_stackedbar.js"></script>
+    <script src="js/d3wrapper_horizontalbar.js"></script>
+    <script src="js/dinner.js"></script>
+</body>
+
+<img src="pics/chili.png" style="position: absolute; top: 690px; left: 15px;"  height="140px" width="160px"/>
+<img src="pics/salmon.png" style="position: absolute; top: 690px; left: 200px;"  height="140px" width="160px"/>
+<img src="pics/pizza.png" style="position: absolute; top: 690px; left: 370px;"  height="140px" width="160px"/>
+
+<div class="rcorners2" style = "position:absolute; top:550px; left:282px;"></div>
+<div class="boxed" style = "position: absolute; top: 555px;left: 295px;">
+Something smells good!  Time for Florette to enjoy a healthy dinner with her family.  
+Sit down to dinner with Florette and pick out some good food!
+</div>
+
+<div id = "text12" class="triangle-right"  style = "position:absolute; top: 200px; left: 350px; width: 200px">I'm hungry!  What's for dinner?</div>
+
+<script>
+	function getMeal(){
+	
+	var meal = localStorage.getItem("last_meal");
+	var horiz_data = localStorage.getItem("horiz_data");
+	var button_val = localStorage.getItem("button_value")
+	/*
+	if(parseInt(localStorage.getItem("last_page")) == 4){
+		meal = meal.substring(1,4);
+		localStorage.setItem("last_meal", meal);
+	}
+	*/
+	//conditional background
+
+	var horiz_array_test = horiz_data.split(',');
+	for(a in horiz_array_test){horiz_array_test[a] = parseFloat(horiz_array_test[a]);}
+	
+	var graph_array_1 = [0,0,0];
+	for(a in horiz_array_test){(graph_array_1[a] = Math.min(horiz_array_test[a], 1.15000001));}
+	var graph_string_1 = graph_array_1.toString();
+	//localStorage.setItem("last_page", "4");
+	//}
+	
+	//function initDraw(){
+		drawStackedBar(meal);
+		drawHorizontalBar(graph_string_1);
+	}
+	
+	function setMeal(){
+		var dinner1 = ".2588,.3556,.2788";
+		var dinner2 = ".2563,.2,.125";
+		var dinner3 = ".435,.6111,.855";
+		var dinner0 = "0,0,0";
+		
+		var meal = localStorage.getItem("last_meal");
+		if(parseInt(localStorage.getItem("last_page")) == 4){
+			meal = meal.substring(1,4);
+			localStorage.setItem("last_meal", meal);
+		}
+		var currentMeal = document.querySelector('input[name="M1P1"]:checked').value;
+		localStorage.setItem("last_meal", currentMeal + meal);
+		d3.select("#chart2").selectAll("svg").remove();
+		
+		var horiz_data = localStorage.getItem("horiz_data");
+		var array = horiz_data.split(",");
+		for(a in array){array[a] = parseFloat(array[a]);}
+		
+		if(localStorage.getItem("button_value") == 1){var mealarray = dinner1.split(",");}
+		else if(localStorage.getItem("button_value") == 2){var mealarray = dinner2.split(",");}
+		else if(localStorage.getItem("button_value") == 3){var mealarray = dinner3.split(",");}
+		else {var mealarray = dinner0.split(",");}
+		for(a in mealarray){mealarray[a] = parseFloat(mealarray[a]);}
+		
+		if(parseInt(localStorage.getItem("last_page"))==4){
+			for(i = 0; i < array.length; i++){
+				array[i] = array[i] - mealarray[i];
+			}
+		}
+
+		if(currentMeal == 1){var newmealarray = dinner1.split(",");}
+		if(currentMeal == 2){var newmealarray = dinner2.split(",");}
+		if(currentMeal == 3){var newmealarray = dinner3.split(",");}
+		for(a in newmealarray){newmealarray[a] = parseFloat(newmealarray[a]);}
+		for(i = 0; i < array.length; i++){
+			array[i] = array[i] + newmealarray[i];
+		}
+		var put = array.toString();
+		localStorage.setItem("horiz_data", put);
+		
+		var graph_array = [0,0,0];
+		for(a in array){(graph_array[a] = Math.min(array[a], 1.15000001));}
+		var graph_string = graph_array.toString();
+		localStorage.setItem("graph_string", graph_string);
+		
+		d3.select("#chart3").selectAll("svg").remove();	
+		
+	}	
+</script>
+
+<script>getMeal();</script>
+
+<script>
+function update(){
+	setMeal();
+	drawStackedBar(localStorage.getItem("last_meal"));
+	drawHorizontalBar(localStorage.getItem("graph_string"));
+	localStorage.setItem("last_page", "4");
+	localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+	
+	var b = document.getElementById('next_page');
+	if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2 || localStorage.getItem("button_value") == 3){
+		b.href = "summary.html"
+	}
+	localStorage.setItem("dinner", document.querySelector('input[name="M1P1"]:checked').value);
+}
+</script>
+
+<div class="rcorners2" style = "position:absolute; left:660px; top:405px; height:30px; width: 510px; background: transparent;"> </div>
+
+<a class="btn" onclick = update() style="position: absolute; top: 785px; left:  75px;"> <input type="radio" name="M1P1" value="1"></a>
+<a class="btn" onclick = update() style="position: absolute; top: 785px; left:  265px;"> <input type="radio" name="M1P1" value="2"></a>
+<a class="btn" onclick = update() style="position: absolute; top: 785px; left:  430px;"> <input type="radio" name="M1P1" value="3"></a>
+
+<p1 style = "position:absolute; left:45px; top:820px; width: 100px;">Veggie Chili<span1>2 cups chili, 1 oz cheese</span1></p1>
+<p2 style = "position:absolute; left:225px; top:820px; width: 200px;">Baked Salmon<span2>3 oz of salmon, 1 cup beans, 1 cup mashed potatos</span2></p2>
+<p3 style = "position:absolute; left:420px; top:820px; width: 100px;">Pizza<span3>2 pieces 14" pizza, 8 oz of coke</span3></p3>
+
+<a class="btn" id="next_page" style="position: absolute; top: 110px; left:  1370px;">Next</a>
+<a class="btn" href="snack_draft.html" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+
+</div>
+</div>
+</html>

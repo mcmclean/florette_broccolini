@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<div class = "wrap">
+<div class = "inside">
+
+<script>localStorage.clear();</script>
+<img src="pics/breakfast.jpg" style="position: absolute; top: 80px; left: 0px;"  height="779px" width="1360px"/>
+
+<img src="pics/english_muffin.png" style="position: absolute; top: 630px; left: 580px;"  height="100px" width="160px"/>
+<img src="pics/spinach_omelette.png" style="position: absolute; top: 630px; left: 780px;"  height="100px" width="160px"/>
+<img src="pics/froot_loops.png" style="position: absolute; top: 630px; left: 980px;"  height="100px" width="160px"/>
+
+<head>
+	<meta charset="utf-8">
+	<title>DataVis Project</title>
+	<meta name="description" content="Breakfast Selection">
+	<meta name="author" content="Northwestern University">
+	<link rel="stylesheet" href="style/breakfast.css" />
+	<link rel="stylesheet" href="style/sunburst.css" />
+	<link rel="stylesheet" href="style/template.css" />
+</head>
+
+<body onload="pageIsLoaded()", drawStackedBar(0);>
+	<div id="mheader"></div>
+    <div id="nwcontent">
+        <div>
+            <p id="clabel1" style="text-align:center;">&nbsp;</p>
+            <div id="chart1" class="chartarea" style = "position: absolute; top: 130px; left: 95px;"></div>
+            <div id="chart2" class="chartarea" style = "position: absolute; top: 120px; left: 630px;"></div>
+            <div id="chart3" class="chartarea" style = "position: absolute; top: 400px; left: 670px;"></div>
+        </div>
+    </div>
+    <div id="mfooter"></div>
+    <script src="js/d3.js"></script>
+    <script src="js/variable_sunburst.js"></script>
+    <script src="js/d3wrapper_stackedbar.js"></script>
+    <script src="js/d3wrapper_horizontalbar.js"></script>
+    <script src="js/breakfast.js"></script>
+</body>
+
+<script>				
+	function getMeal(){
+	var meal;
+	var last_meal;
+	var horiz_data;
+    last_meal = localStorage.getItem("last_meal");
+	horiz_data = localStorage.getItem("horiz_data");
+		if (last_meal == null || last_meal == "null"){
+			meal = 0;
+		} else {
+			meal = localStorage.getItem("last_meal");
+		}
+		if (horiz_data == null || horiz_data == "null"){
+			horiz_data = "0,0,0";
+		} else {
+			horiz_data = localStorage.getItem("horiz_data");
+		}
+	drawStackedBar(meal);
+	console.log(meal);
+	drawHorizontalBar(horiz_data);
+	console.log(horiz_data);
+	localStorage.setItem("last_page", "1");
+	}
+	
+	function setMeal(){
+		var meal = document.querySelector('input[name="M1P1"]:checked').value;
+		localStorage.setItem("last_meal", meal);
+		d3.select("#chart2").selectAll("svg").remove();
+		console.log(meal);
+
+		if(meal == 1){horiz_data = ".2963,.1667,.5575";}
+		if(meal == 2){horiz_data = ".2213,.42,.3488";}
+		if(meal == 3){horiz_data = ".1325,.1389,.625";}
+		localStorage.setItem("horiz_data", horiz_data);
+		d3.select("#chart3").selectAll("svg").remove();	
+		console.log(horiz_data);		
+	}	
+</script>
+<script>getMeal();</script>
+
+<script>
+function update(){
+	setMeal();
+	drawStackedBar(localStorage.getItem("last_meal"));
+	drawHorizontalBar(localStorage.getItem("horiz_data"));
+	localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+	
+	var b = document.getElementById('next_page');
+	if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2){
+		b.href = "soccer_good.html"
+	}
+	else if (localStorage.getItem("button_value") == 3){
+		b.href = "soccer_bad.html"
+	}
+	localStorage.setItem("breakfast", document.querySelector('input[name="M1P1"]:checked').value);
+}
+</script>
+<div class="triangle-right" style = "position:absolute; top: 525px; left: 260px; width: 200px;">I've got a big day today!<br/>What should I have for breakfast?</div>
+
+
+<div class="rcorners2" style = "position:absolute; left:50px; top:120px; height:20px; width: 510px; background: #EAEAEA;"> </div>
+
+<div class="rcorners2" style = "position:absolute; left:670px; top:425px; height:30px; width: 500px; background: transparent;"> </div>
+	
+
+<div class="boxed" style = "position: absolute; top: 130px; left: 75px;">
+Can you pick what would be a good breakfast for Florette?  
+Click on the foods that will help her have a great day!
+</div>
+
+
+
+<a class="btn" onclick = update() style="position: absolute; top: 750px; left:  650px;"> <input type="radio" name="M1P1" value="1"></a>
+<a class="btn" onclick = update() style="position: absolute; top: 750px; left:  850px;"> <input type="radio" name="M1P1" value="2"></a>
+<a class="btn" onclick = update() style="position: absolute; top: 750px; left:  1050px;"> <input type="radio" name="M1P1" value="3"></a>
+<a class="btn" id ="next_page" style="position: absolute; top: 110px; left:  1370px;">Next</a>
+
+<p1 style = "position:absolute; left:620px; top:800px;">English Muffin<span1>1 english muffin, 2 tbsp peanut butter, 1 cup of banana slices</span1></p1>
+<p2 style = "position:absolute; left:800px; top:800px;">Spinach Omelette<span2>1 egg, 1 cup spinach, 1.5 ounces cheese, 1 piece bread, 1/2 cup oj</span2></p2>
+<p3 style = "position:absolute; left:1030px; top:800px;">Froot Loops<span3>1 cup of cereal 1 cup 1% of milk</span3></p3>
+
+<a class="btn" href="setup.html" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+</div>
+</div>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<div class = "wrap">
+<div class = "inside">
+
+<img src="pics/summary.png" id = "background_pic" style="position: absolute; top: 80px; left: 0px;"  height="779px" width="1360px"/>
+
+<head>
+	<meta charset="utf-8">
+	<title>DataVis Project</title>
+	<meta name="description" content="Summary Selection">
+	<meta name="author" content="Northwestern University">
+	<link rel="stylesheet" href="style/summary.css" />
+	<link rel="stylesheet" href="style/template.css" />
+</head>
+
+<body>
+	<div id="mheader"></div>
+    <div id="nwcontent">
+
+    </div>
+    <div id="mfooter"></div>
+</body>
+
+<script>
+function rate(){
+	var rec_vals = 	"1.5, 1.5,  4, 5,   2.5";
+	var bfast1 = 	"1,   0,    2, 2,   0";
+	var bfast2 = 	"0.5, 0.5,  1, 1,   1";
+	var bfast3 = 	"0,   0,    2, 0,   1";
+	var lunch1 = 	"0.5, 1,    2, 0,   1";
+	var lunch2 = 	"1,   0,    2, 3,   2";
+	var lunch3 = 	"0,   0.75, 2, 3,   0.66";
+	var snack1 = 	"0.5, 1,    0, 2,   0";
+	var snack2 = 	"0,   0,    0, 1,   1.33";
+	var snack3 = 	"1,   0,    0, 1,   1";
+	var dinner1 = 	"0,   1.5,  0, 1,   0.66";
+	var dinner2 = 	"0,   2,    0, 3,   0";
+	var dinner3 = 	"0,   1,    2, 0.5, 2";
+	var pass1 = "1";
+	var pass2 = "1";
+	var pass3 = "1";
+	var pass4 = "1";
+	
+	if(localStorage.getItem("breakfast") == 1){var breakfast_array = bfast1.split(",");}
+	else if(localStorage.getItem("breakfast") == 2){var breakfast_array = bfast2.split(",");}
+	else{var breakfast_array = bfast3.split(",");}
+	for(a in breakfast_array){breakfast_array[a] = parseFloat(breakfast_array[a]);}
+	
+	if(localStorage.getItem("lunch") == 1){var lunch_array = lunch1.split(",");}
+	else if(localStorage.getItem("lunch") == 2){var lunch_array = lunch2.split(",");}
+	else{var lunch_array = lunch3.split(",");}
+	for(a in lunch_array){lunch_array[a] = parseFloat(lunch_array[a]);}
+	
+	if(localStorage.getItem("snack") == 1){var snack_array = snack1.split(",");}
+	else if(localStorage.getItem("snack") == 2){var snack_array = snack2.split(",");}
+	else{var snack_array = snack3.split(",");}
+	for(a in snack_array){snack_array[a] = parseFloat(snack_array[a]);}
+	
+	if(localStorage.getItem("dinner") == 1){var dinner_array = dinner1.split(",");}
+	else if(localStorage.getItem("dinner") == 2){var dinner_array = dinner2.split(",");}
+	else{var dinner_array = dinner3.split(",");}
+	for(a in dinner_array){dinner_array[a] = parseFloat(dinner_array[a]);}
+	
+	var rec_array = rec_vals.split(",");
+	for(a in rec_array){rec_array[a] = parseFloat(rec_array[a]);}
+	console.log(rec_array);
+	console.log(breakfast_array);
+	console.log(lunch_array);
+	console.log(snack_array);
+	console.log(dinner_array);
+	
+	/*original scoring
+	for(a in rec_array){rec_array[a] = rec_array[a] - breakfast_array[a] - lunch_array[a] - snack_array[a] - dinner_array[a];}
+	for(a in rec_array){if(rec_array[a] > 0){pass1 = "0";}}
+	*/
+	
+	  //3 out of 5
+	var count1 = 0;
+	for(a in rec_array){rec_array[a] = rec_array[a] - breakfast_array[a] - lunch_array[a] - snack_array[a] - dinner_array[a];}
+	for(a in rec_array){if(rec_array[a] > 0){count1 = count1 + 1;}}
+	if(count1 >= 3){pass1 = "0";}
+	
+	/*
+	for(a in rec_array){if(rec_array[a] >= 1.25*(breakfast_array[a] + lunch_array[a] + snack_array[a] + dinner_array[a])){pass1 = "0";}}
+	*/
+	
+	var horiz_data = localStorage.getItem("horiz_data");
+	console.log(horiz_data);
+	var array = horiz_data.split(",");
+	for(a in array){array[a] = parseFloat(array[a]);}
+	if(array[0] < .85 || array[0] > 1.15){
+		var pass2 = "0";
+	}
+	if(array[1] > 1.15){
+		var pass3 = "0";
+	}
+	if(array[2] > 1.15){
+		var pass4 = "0";
+	}
+	
+	var score = pass1 + "," + pass2 + "," + pass3 + "," + pass4;
+	var score_array = score.split(",");
+	for(a in score_array){score_array[a] = parseInt(score_array[a]);}
+	var count = 0;
+	for(a in score_array){count = count + score_array[a];}
+	console.log(count);
+	
+	var ni = document.getElementById('nwcontent');
+	if(count > 0){
+		var star1 = document.createElement('star1');
+		star1.setAttribute('id', 'star1');
+		star1.setAttribute('class','star-five');
+		star1.setAttribute('style','position:absolute; top:190px; left:130px;');
+		ni.appendChild(star1);
+	}
+	if(count > 1){
+		var star2 = document.createElement('star2');
+		star2.setAttribute('id', 'star2');
+		star2.setAttribute('class','star-five');
+		star2.setAttribute('style','position:absolute; top:190px; left:330px;');
+		ni.appendChild(star2);
+	}
+	if(count > 2){
+		var star3 = document.createElement('star3');
+		star3.setAttribute('id', 'star3');
+		star3.setAttribute('class','star-five');
+		star3.setAttribute('style','position:absolute; top:190px; left:530px;');
+		ni.appendChild(star3);
+	}
+	if(count > 3){
+		var star4 = document.createElement('star4');
+		star4.setAttribute('id', 'star4');
+		star4.setAttribute('class','star-five');
+		star4.setAttribute('style','position:absolute; top:190px; left:730px;');
+		ni.appendChild(star4);
+	}
+
+	
+	// here is the stuff I added
+	
+	var pass1_txt = document.createElement('pass1_txt');
+	pass1_txt.setAttribute('id', 'pass1_txt');
+	pass1_txt.setAttribute('class','boxed');
+	pass1_txt.setAttribute('style','position:absolute; top:415px; left:130px;');
+	if(score_array[0] == 0){
+		pass1_txt.innerHTML = "-  You didn't get all your food groups: No Star";
+	}
+	else{
+		pass1_txt.innerHTML = "-  You had a balanced diet today!  +1 Star!"
+	}
+	ni.appendChild(pass1_txt);
+	
+	var pass2_txt = document.createElement('pass2_txt');
+	pass2_txt.setAttribute('id', 'pass2_txt');
+	pass2_txt.setAttribute('class','boxed');
+	pass2_txt.setAttribute('style','position:absolute; top:515px; left:130px;');
+	if(score_array[1] == 0){
+		pass2_txt.innerHTML = "-  You didn't get the right number of calories: No Star";
+	}
+	else{
+		pass2_txt.innerHTML = "-  You ate a healthy number of calories!  +1 Star!"
+	}
+	ni.appendChild(pass2_txt);
+	
+	var pass3_txt = document.createElement('pass3_txt');
+	pass3_txt.setAttribute('id', 'pass3_txt');
+	pass3_txt.setAttribute('class','boxed');
+	pass3_txt.setAttribute('style','position:absolute; top:615px; left:130px;');
+	if(score_array[2] == 0){
+		pass3_txt.innerHTML = "-  You ate too much saturated fat: No Star";
+	}
+	else{
+		pass3_txt.innerHTML = "-  You didn't eat too much saturated fat!  +1 Star!"
+	}
+	ni.appendChild(pass3_txt);
+	
+	var pass4_txt = document.createElement('pass4_txt');
+	pass4_txt.setAttribute('id', 'pass4_txt');
+	pass4_txt.setAttribute('class','boxed');
+	pass4_txt.setAttribute('style','position:absolute; top:715px; left:130px;');
+	if(score_array[3] == 0){
+		pass4_txt.innerHTML = "-  You ate too much sugar:  No Star";
+	}
+	else{
+		pass4_txt.innerHTML = "-  You had a healthy amount of sugar!  +1 Star!"
+	}
+	ni.appendChild(pass4_txt);
+
+	
+}
+</script>
+
+
+<script>rate();</script>
+
+
+<div class="rcorners2"> </div>
+
+
+<a class="btn" href = "info.html" style="position: absolute; top: 110px; left:  1370px;">Next</a>
+<a class="btn" href="dinner_draft.html" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+</div>
+</div>
+</html>

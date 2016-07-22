@@ -4,9 +4,10 @@ This interactive storybook was a final project for my Spring 2016 Data Visualiza
 
 Shoutout to Steve for artistic magic and Brian for D3 wizardry.
 
-
 NOTES FOR USE:
 
 Please start with the "title" html file and ensure you use a browser with local file access enabled (https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally).
 If it seems to be acting up, drag the file onto your browser shortcut to open it instead of a double-click - this tends to help.
-Hope you enjoy it!
+
+*Data shortcuts were taken due to time constraints.
+**Also, this was created before I knew what Bootstrap or jQuery was.

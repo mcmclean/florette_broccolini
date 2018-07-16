@@ -1,0 +1,6 @@
+FoodGroup,Breakfast,Lunch,Snack,Dinner
+Grains,1,2,1,1.5
+Vegetables,0,0.5,1,1
+Fruits,0.5,0,0,1
+Protein,2,1,0,2
+Dairy,1,1,0.5,0

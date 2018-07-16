@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %} Soccer - Bad {% endblock %}
+
+{% block head %}
+	{{ super() }}
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/soccer.css') }}">
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/template.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class = "wrap">
+	<div class = "inside">
+
+		<img src="/static/pics/soccer_sad.jpg" style="position: absolute; top: 80px; left: 0px;"  height="779px" width="1360px"/>
+		<script>pageIsLoaded();</script>
+
+		<div id="mheader"></div>
+		<div id="mfooter"></div>
+
+		<div class="boxed">
+		Florette loves to play soccer.  She is one of the best players on the team when she works hard and eats right.  She didn't have a healthy breakfast, so she's not playing her best.
+		</div>
+
+		<div class="triangle-right" style = "position:absolute; top: 550px; left: 210px; width: 220px;">Ugh, I don't feel so good...</div>
+
+		<a class="btn" href="/lunch_draft" style="position: absolute; top: 110px; left:  1370px;">Next</a>
+		<a class="btn" href="/breakfast_draft" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+	</div>
+</div>
+{% endblock %}

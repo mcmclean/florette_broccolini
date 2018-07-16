@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %} Title {% endblock %}
+
+{% block head %}
+	{{ super() }}
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/title.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<div class="wrap">
+	<div class="inside">
+		<img src="/static/pics/title_alt.jpg" style="position: absolute; top: 0px; left: 0px;"  height="859px" width="1440px"/>
+		<a class="btn" href="/setup" style="position: absolute; top: 750px; left:  1250px;">	Begin!</a>
+	</div>
+</div>
+
+{% endblock %}

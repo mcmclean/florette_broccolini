@@ -4,6 +4,14 @@ This interactive storybook was a final project for my Spring 2016 Data Visualiza
 
 Shoutout to Steve for artistic magic and Brian for D3 wizardry.
 
+###############################################################
+
+UPDATE - it's flaskified, though I still need to fix all that csv nonsense
+
+###############################################################
+
+(Below is old)
+
 NOTES FOR USE:
 
 Please start with the "title" html file and ensure you use a browser with local file access enabled (https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally).

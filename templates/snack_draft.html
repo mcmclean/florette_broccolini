@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %} Snack {% endblock %}
+
+{% block head %}
+	{{ super() }}
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/snack.css') }}">
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/sunburst.css') }}">
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/template.css') }}">
+{% endblock %}
+
+{% block body %}
+
+		<div class = "wrap">
+		<div class = "inside">
+
+		<img src="/static/pics/gma_house.jpg" style="position: absolute; top: 80px; left: 0px;"  height="779px" width="1360px"/>
+
+		<img src="/static/pics/antsLog.png" style="position: absolute; top: 680px; left: 680px;"  height="140px" width="160px"/>
+		<img src="/static/pics/crackersCheese.png" style="position: absolute; top: 680px; left: 880px;"  height="140px" width="160px"/>
+		<img src="/static/pics/pie.png" style="position: absolute; top: 680px; left: 1080px;"  height="140px" width="160px"/>
+
+		<div id="mheader"></div>
+		<div id="nwcontent">
+		<div>
+			<p id="clabel1" style="text-align:center;">&nbsp;</p>
+			<div id="chart1" class="chartarea" style = "position: absolute; top: 50px; left: 250px;"></div>
+			<div id="chart2" class="chartarea" style = "position: absolute; top: 200px; left: 650px;"></div>
+			<div id="chart3" class="chartarea" style = "position: absolute; top: 490px; left: 680px;"></div>
+		</div>
+		</div>
+		<div id="mfooter"></div>
+		<script src="/static/js/d3.js"></script>
+		<script src="/static/js/variable_sunburst.js"></script>
+		<script src="/static/js/d3wrapper_stackedbar.js"></script>
+		<script src="/static/js/d3wrapper_horizontalbar.js"></script>
+		<script src="/static/js/snack.js"></script>
+		<script>pageIsLoaded();</script>
+
+
+		<div class="rcorners2" style = "position:absolute; top:395px; left:12px;"> </div>
+
+		<div class="boxed" style = "position: absolute; top: 405px;left: 25px;">Florette loves going to Grandma's house.  
+		She has a cute kitty and great food.  
+		Help Florette pick a healthy snack!</div>
+
+		<div class="triangle-right" style = "position:absolute; top: 495px; left: 180px; width: 65px;">
+		Hi Kitty!</div>
+
+		<script>				
+			function getMeal(){
+			
+			var snack1 = ".2238,.6389,.01";
+			var snack2 = ".2038,.1117,.625";
+			var snack3 = ".3206,.3722,.9125";
+			var dinner1 = ".2588,.3556,.2788";
+			var dinner2 = ".2563,.2,.125";
+			var dinner3 = ".435,.6111,.855";
+
+			var meal = localStorage.getItem("last_meal");
+			var horiz_data = localStorage.getItem("horiz_data");
+			var button_val = localStorage.getItem("button_value");
+
+			if(parseInt(localStorage.getItem("last_page")) == 4){
+				var actual_meal = meal.substring(2,4);
+				localStorage.setItem("last_meal", actual_meal);
+				
+				var snack = meal.substring(1,2);
+				snack = parseInt(snack);
+				if(snack == 1){var snackarray = snack1.split(",");}
+				if(snack == 2){var snackarray = snack2.split(",");}
+				if(snack == 3){var snackarray = snack3.split(",");}
+				for(a in snackarray){snackarray[a] = parseFloat(snackarray[a]);}
+				
+				var dinner = meal.substring(0,1);
+				dinner = parseInt(dinner);
+				if(dinner == 1){var dinnerarray = dinner1.split(",");}
+				if(dinner == 2){var dinnerarray = dinner2.split(",");}
+				if(dinner == 3){var dinnerarray = dinner3.split(",");}
+				for(a in dinnerarray){dinnerarray[a] = parseFloat(dinnerarray[a]);}
+				
+				var curr_array = horiz_data.split(",");
+				for(a in curr_array){curr_array[a] = parseFloat(curr_array[a]);}
+				for(a in curr_array){curr_array[a] = curr_array[a] - dinnerarray[a] - snackarray[a];}
+				localStorage.setItem("horiz_data", curr_array.toString());
+			}
+			
+			var horiz_array_test = horiz_data.split(',');
+			for(a in horiz_array_test){horiz_array_test[a] = parseFloat(horiz_array_test[a]);}
+			
+			var graph_array_1 = [0,0,0];
+			for(a in horiz_array_test){(graph_array_1[a] = Math.min(horiz_array_test[a], 1.15000001));}
+			var graph_string_1 = graph_array_1.toString();
+			
+			drawStackedBar(meal);
+			drawHorizontalBar(graph_string_1);
+
+			}
+			
+			function setMeal(){
+				var snack1 = ".2238,.6389,.01";
+				var snack2 = ".2038,.1117,.625";
+				var snack3 = ".3206,.3722,.9125";
+				var snack0 = "0,0,0";
+
+				var meal = localStorage.getItem("last_meal");
+				if(parseInt(localStorage.getItem("last_page")) == 3){
+					meal = meal.substring(1,3);
+					localStorage.setItem("last_meal", meal);
+				}
+				var currentMeal = document.querySelector('input[name="M1P1"]:checked').value;
+				localStorage.setItem("last_meal", currentMeal + meal);
+				d3.select("#chart2").selectAll("svg").remove();
+				
+				var horiz_data = localStorage.getItem("horiz_data");
+				var array = horiz_data.split(",");
+				for(a in array){array[a] = parseFloat(array[a]);}
+				
+				if(localStorage.getItem("button_value") == 1){var mealarray = snack1.split(",");}
+				else if(localStorage.getItem("button_value") == 2){var mealarray = snack2.split(",");}
+				else if(localStorage.getItem("button_value") == 3){var mealarray = snack3.split(",");}
+				else {var mealarray = snack0.split(",");}
+				for(a in mealarray){mealarray[a] = parseFloat(mealarray[a]);}
+				
+				if(parseInt(localStorage.getItem("last_page"))==3){
+					for(i = 0; i < array.length; i++){
+						array[i] = array[i] - mealarray[i];
+					}
+				}
+
+				if(currentMeal == 1){var newmealarray = snack1.split(",");}
+				if(currentMeal == 2){var newmealarray = snack2.split(",");}
+				if(currentMeal == 3){var newmealarray = snack3.split(",");}
+				for(a in newmealarray){newmealarray[a] = parseFloat(newmealarray[a]);}
+				for(i = 0; i < array.length; i++){
+					array[i] = array[i] + newmealarray[i];
+				}
+				var put = array.toString();
+				localStorage.setItem("horiz_data", put);
+				
+				var graph_array = [0,0,0];
+				for(a in array){(graph_array[a] = Math.min(array[a], 1.15000001));}
+				var graph_string = graph_array.toString();
+				localStorage.setItem("graph_string", graph_string);
+				
+				d3.select("#chart3").selectAll("svg").remove();	
+			}	
+		</script>
+
+		<script>getMeal();</script>
+
+		<script>
+		function update(){
+			setMeal();
+			drawStackedBar(localStorage.getItem("last_meal"));
+			drawHorizontalBar(localStorage.getItem("graph_string"));
+			localStorage.setItem("last_page", "3");
+			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+			
+			var b = document.getElementById('next_page');
+			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2){
+				b.href = "/dinner_draft"
+			}
+			if(localStorage.getItem("button_value") == 3){
+				b.href = "/dinner_draft_bad"
+			}
+			
+			var c = document.getElementById('prev_page');
+			if(localStorage.getItem("last_page") != 4){
+				c.href = "/lunch_draft"
+			}
+			localStorage.setItem("snack", document.querySelector('input[name="M1P1"]:checked').value);
+		}
+		</script>
+
+		<div class="rcorners2" style = "position:absolute; left:675px; top:515px; height:30px; width: 510px; background: transparent;"> </div>
+
+		<a class="btn" onclick = update() style="position: absolute; top: 780px; left:  750px;"> <input type="radio" name="M1P1" value="1"></a>
+		<a class="btn" onclick = update() style="position: absolute; top: 780px; left:  950px;"> <input type="radio" name="M1P1" value="2"></a>
+		<a class="btn" onclick = update() style="position: absolute; top: 780px; left:  1150px;"> <input type="radio" name="M1P1" value="3"></a>
+
+		<p1 style = "position:absolute; left:710px; top:820px; width: 200px;">Ants on a Log<span1>1 cup celery, 2 tbsp peanut butter, 1/4 cup raisins</span1></p1>
+		<p2 style = "position:absolute; left:900px; top:820px; width: 200px;">Cheese & Crackers<span2>10 saltines, 2 ounces of cheese</span2></p2>
+		<p3 style = "position:absolute; left:1120px; top:820px; width: 200px;">Apple Pie<span3>1 cup 1% milk, 1 piece apple pie</span3></p3>
+
+		<a class="btn" id="next_page" style="position: absolute; top: 110px; left:  1370px;">Next</a>
+		<a class="btn" id="prev_page" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+	</div>
+</div>
+
+{% endblock %}

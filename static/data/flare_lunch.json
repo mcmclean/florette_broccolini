@@ -1,0 +1,32 @@
+{
+    "name": "Lunch",
+    "children": [
+    {
+        "name": "Burger",
+        "children": [
+        {"name": "Grains", "size":2},
+        {"name": "Vegetables", "size":0.75},
+        {"name": "Dairy", "size":0.66},
+        {"name": "Protein", "size":3}
+        ]
+    },
+    {
+        "name": "Turkey Sandwhich",
+        "children": [
+        {"name": "Grains", "size":2},
+        {"name": "Fruits", "size":1},
+        {"name": "Dairy", "size":2},
+        {"name": "Protein", "size":3}
+        ]
+    },
+    {    
+        "name": "Spaghetti",
+        "children": [
+        {"name": "Grains", "size":2},
+        {"name": "Vegetables", "size":0.5},
+        {"name": "Fruits", "size":1},
+        {"name": "Dairy", "size":1}
+        ]
+    }
+    ]
+}

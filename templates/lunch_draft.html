@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %} Lunch {% endblock %}
+
+{% block head %}
+	{{ super() }}
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/lunch.css') }}">
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/sunburst.css') }}">
+	<link rel= "stylesheet" type= "text/css" href="{{ url_for('static', filename='style/template.css') }}">
+{% endblock %}
+
+{% block body %}
+
+<div class = "wrap">
+	<div class = "inside">
+
+		<img src="/static/pics/lunch.jpg" style="position: absolute; top: 80px; left: 0px;"  height="779px" width="1360px"/>
+
+		<img src="/static/pics/spaghetti.png" style="position: absolute; top: 660px; left: 380px;"  height="140px" width="160px"/>
+		<img src="/static/pics/turkeySand.png" style="position: absolute; top: 660px; left: 580px;"  height="140px" width="160px"/>
+		<img src="/static/pics/burger.png" style="position: absolute; top: 660px; left: 780px;"  height="140px" width="160px"/>
+
+
+		<div id="mheader"></div>
+		<div id="nwcontent">
+			<div>
+				<p id="clabel1" style="text-align:center;">&nbsp;</p>
+				<div id="chart1" class="chartarea" style = "position: absolute; top: 500px; left: 970px;"></div>
+				<div id="chart2" class="chartarea" style = "position: absolute; top: 140px; left: 680px;"></div>
+				<div id="chart3" class="chartarea" style = "position: absolute; top: 425px; left: 720px;"></div>
+			</div>
+		</div>
+		<div id="mfooter"></div>
+
+		<script src="/static/js/d3.js"></script>
+		<script src="/static/js/variable_sunburst.js"></script>
+		<script src="/static/js/d3wrapper_stackedbar.js"></script>
+		<script src="/static/js/d3wrapper_horizontalbar.js"></script>
+		<script src="/static/js/lunch.js"></script>
+		<script>pageIsLoaded();</script>
+
+		<div class="rcorners2" style = "position:absolute; top:100px; left:60px;"> </div>
+
+		<div class="boxed" style = "position: absolute; top: 110px;left: 75px;">Lunchtime is Florette’s favorite.  What should she eat?  
+		Remember that she is going to Grandma’s after lunch.  Pick some of Florette’s favorite foods!</div>
+
+		<div class="triangle-right"  style = "position:absolute; top: 695px; left: 60px">
+		Can't wait to have fun with Grandma!<br/>What should I have for lunch?</div>
+
+		<script>				
+			function getMeal(){
+			
+			var lunch1 = ".2934,.2811,.5063";
+			var lunch2 = ".4084,.7056,.5088";
+			var lunch3 = ".4713,.6789,.1358";
+			var snack1 = ".2238,.6389,.01";
+			var snack2 = ".2038,.1117,.625";
+			var snack3 = ".3206,.3722,.9125";
+			var dinner1 = ".2588,.3556,.2788";
+			var dinner2 = ".2563,.2,.125";
+			var dinner3 = ".435,.6111,.855";
+			
+			var meal = localStorage.getItem("last_meal");
+			var horiz_data = localStorage.getItem("horiz_data");
+			var button_val = localStorage.getItem("button_value");
+
+			if(parseInt(localStorage.getItem("last_page")) == 3){
+				var actual_meal = meal.substring(2,3);
+				localStorage.setItem("last_meal", actual_meal);
+				
+				var snack = meal.substring(0,1);
+				snack = parseInt(snack);
+				if(snack == 1){var snackarray = snack1.split(",");}
+				if(snack == 2){var snackarray = snack2.split(",");}
+				if(snack == 3){var snackarray = snack3.split(",");}
+				for(a in snackarray){snackarray[a] = parseFloat(snackarray[a]);}
+				
+				var lunch = meal.substring(1,2);
+				lunch = parseInt(lunch);
+				if(lunch == 1){var luncharray = lunch1.split(",");}
+				if(lunch == 2){var luncharray = lunch2.split(",");}
+				if(lunch == 3){var luncharray = lunch3.split(",");}
+				for(a in luncharray){luncharray[a] = parseFloat(luncharray[a]);}
+				
+				var curr_array = horiz_data.split(",");
+				for(a in curr_array){curr_array[a] = parseFloat(curr_array[a]);}
+				for(a in curr_array){curr_array[a] = curr_array[a] - snackarray[a] - luncharray[a];}
+				localStorage.setItem("horiz_data", curr_array.toString());
+			}
+
+			if(parseInt(localStorage.getItem("last_page")) == 4){
+				var actual_meal = meal.substring(3,4);
+				localStorage.setItem("last_meal", actual_meal);
+				
+				var dinner = meal.substring(0,1);
+				dinner = parseInt(dinner);
+				if(dinner == 1){var dinnerarray = snack1.split(",");}
+				if(dinner == 2){var dinnerarray = snack2.split(",");}
+				if(dinner == 3){var dinnerarray = snack3.split(",");}
+				for(a in dinnerarray){dinnerarray[a] = parseFloat(dinnerarray[a]);}
+				
+				var snack = meal.substring(1,2);
+				snack = parseInt(snack);
+				if(snack == 1){var snackarray = snack1.split(",");}
+				if(snack == 2){var snackarray = snack2.split(",");}
+				if(snack == 3){var snackarray = snack3.split(",");}
+				for(a in snackarray){snackarray[a] = parseFloat(snackarray[a]);}
+				
+				var lunch = meal.substring(2,3);
+				lunch = parseInt(lunch);
+				if(lunch == 1){var luncharray = lunch1.split(",");}
+				if(lunch == 2){var luncharray = lunch2.split(",");}
+				if(lunch == 3){var luncharray = lunch3.split(",");}
+				for(a in luncharray){luncharray[a] = parseFloat(luncharray[a]);}
+				
+				var curr_array = horiz_data.split(",");
+				for(a in curr_array){curr_array[a] = parseFloat(curr_array[a]);}
+				for(a in curr_array){curr_array[a] = curr_array[a] - snackarray[a] - luncharray[a] - dinnerarray[a];}
+				localStorage.setItem("horiz_data", curr_array.toString());
+			}
+
+			drawStackedBar(localStorage.getItem("last_meal"));
+			drawHorizontalBar(localStorage.getItem("horiz_data"));
+			}
+			
+			function setMeal(){
+				var lunch1 = ".2934,.2811,.5063";
+				var lunch2 = ".4084,.7056,.5088";
+				var lunch3 = ".4713,.6789,.1358";
+				var lunch0 = "0,0,0";
+
+				var meal = localStorage.getItem("last_meal")
+				if(parseInt(localStorage.getItem("last_page")) == 2){
+					meal = meal.substring(1,2);
+					localStorage.setItem("last_meal", meal);
+				}
+				var currentMeal = document.querySelector('input[name="M1P1"]:checked').value;
+				localStorage.setItem("last_meal", currentMeal + meal);
+				d3.select("#chart2").selectAll("svg").remove();
+
+				var horiz_data = localStorage.getItem("horiz_data");
+				var array = horiz_data.split(",");
+				for(a in array){array[a] = parseFloat(array[a]);}
+				
+				if(localStorage.getItem("button_value") == 1){var mealarray = lunch1.split(",");}
+				else if(localStorage.getItem("button_value") == 2){var mealarray = lunch2.split(",");}
+				else if(localStorage.getItem("button_value") == 3){var mealarray = lunch3.split(",");}
+				else {var mealarray = lunch0.split(",");}
+				for(a in mealarray){mealarray[a] = parseFloat(mealarray[a]);}
+				
+				if(parseInt(localStorage.getItem("last_page"))==2){
+					for(i = 0; i < array.length; i++){
+						array[i] = array[i] - mealarray[i];
+					}
+				}
+
+				if(currentMeal == 1){var newmealarray = lunch1.split(",");}
+				if(currentMeal == 2){var newmealarray = lunch2.split(",");}
+				if(currentMeal == 3){var newmealarray = lunch3.split(",");}
+				for(a in newmealarray){newmealarray[a] = parseFloat(newmealarray[a]);}
+				for(i = 0; i < array.length; i++){
+					array[i] = array[i] + newmealarray[i];
+				}
+				var put = array.toString();
+				
+				var graph_array = [0,0,0];
+				for(a in array){(graph_array[a] = Math.min(array[a], 1.15000001));}
+				var graph_string = graph_array.toString();
+				console.log(graph_string);
+				
+				localStorage.setItem("graph_string", graph_string);
+				
+				localStorage.setItem("horiz_data", put);
+				
+				d3.select("#chart3").selectAll("svg").remove();	
+			}	
+		</script>
+
+		<script>getMeal();</script>
+
+		<script>
+		function update(){
+			setMeal();
+			drawStackedBar(localStorage.getItem("last_meal"));
+			drawHorizontalBar(localStorage.getItem("graph_string"));
+			localStorage.setItem("last_page", "2");
+			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+			
+			var b = document.getElementById('next_page');
+			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2 || localStorage.getItem("button_value") == 3){
+				b.href = "/snack_draft"
+			}
+			localStorage.setItem("lunch", document.querySelector('input[name="M1P1"]:checked').value);
+		}
+		</script>
+
+		<div class="rcorners2" style = "position:absolute; left:710px; top:450px; height:30px; width: 510px; background: transparent;"> </div>
+
+		<a class="btn" onclick = update() style="position: absolute; top: 760px; left:  450px;"> <input type="radio" name="M1P1" value="1"></a>
+		<a class="btn" onclick = update() style="position: absolute; top: 760px; left:  650px;"> <input type="radio" name="M1P1" value="2"></a>
+		<a class="btn" onclick = update() style="position: absolute; top: 760px; left:  850px;"> <input type="radio" name="M1P1" value="3"></a>
+
+		<p1 style = "position:absolute; left:420px; top:800px; width: 100px;">Spaghetti<span1>1 cup pasta, 1 cup tomato, 1 oz parmesan, 1 cup fruit</span1></p1>
+		<p2 style = "position:absolute; left:590px; top:800px; width: 200px;">Turkey Sandwich<span2>3 oz turkey, 1.5 slice cheddar, lettuce, 1 oz mayo,  1 cup apple</span2></p2>
+		<p3 style = "position:absolute; left:835px; top:800px; width: 100px;">Burger<span3>3 ounce 80/20 burger, 1 bun top/bottom, 1 slice american cheese, 3 oz. fries</span3></p3>
+
+
+		<a class="btn" id="next_page" style="position: absolute; top: 110px; left:  1370px;">Next</a>
+		<a class="btn" href="/breakfast_draft" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+	</div>
+</div>
+
+{% endblock %}

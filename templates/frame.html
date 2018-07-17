@@ -1,0 +1,42 @@
+{% extends "base_frame.html" %}
+
+{% block title %} Home {% endblock %}
+
+<link rel="shortcut icon" href="">
+
+
+{% block body %}
+
+<!-- <button type="submit" id="random_btn">Randomize</button>
+<button type="submit" id="copy_btn">Reset</button> -->
+
+<h1>Frame</h1>
+{{ frame|safe }}
+
+<!-- <button type="submit" id="update_btn">Update</button>
+
+<script type="text/javascript">
+
+	$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+	document.getElementById("random_btn").onclick = function () {
+		location.href = "http://127.0.0.1:5000/randomize/";
+	};
+
+	document.getElementById("copy_btn").onclick = function () {
+		location.href = "http://127.0.0.1:5000/copy_from_db/";
+	};
+
+	document.getElementById("update_btn").onclick = function () {
+	
+		$.getJSON($SCRIPT_ROOT + '/write/', {
+			data :   $("input.frame_input").serialize(),
+			}, function(data) {
+				console.log(data.result);
+			});
+
+	};
+
+</script>
+ -->
+{% endblock %}

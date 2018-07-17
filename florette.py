@@ -2,12 +2,19 @@
 
 import pandas as pd, numpy as np
 # from sqlalchemy import create_engine, MetaData, Table, Column, Float, String, Integer
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, send_from_directory
 import sys
 
 ################################################
 
-app = Flask(__name__)
+def html_input(c):
+	# return '<input name="{}" value="{{}}" />'.format(c)
+	return '<input class="frame_input" name="{}" value="{{}}" />'.format(c)
+
+
+# app = Flask(__name__)
+app = Flask(__name__, static_url_path = '/static')
+
 
 @app.route('/', methods = ['GET'])
 def hello_world():
@@ -53,44 +60,49 @@ def info():
 def summary():
 	return render_template('summary.html', title = 'Summary')
 
+@app.route('/static/<path:path>')
+def send_static_file_(path):
+	return send_from_directory('static', path)
+
+@app.route('/frame')
+def empty_frame():
+	# import sys
+	df = pd.DataFrame(columns = ['FoodGroup', 'Breakfast', 'Lunch', 'Snack', 'Dinner'])
+	df['FoodGroup'] = pd.Series(['Grain', 'Vegetables', 'Fruits', 'Protein', 'Dairy'])
+	for col in [x for x in df.columns if x is not 'FoodGroup']:
+		df[col] = pd.Series([0 for x in range(len(list(df['FoodGroup'].values)))])
+	# print(df, file=sys.stderr)
+
+	breakfasts = {	1: {'Grain': 2, 'Vegetables': 0, 'Fruits': 1, 'Protein': 2, 'Dairy': 1},
+					2: {'Grain': 1, 'Vegetables': 0.5, 'Fruits': 0.5, 'Protein': 1, 'Dairy': 1},
+					3: {'Grain': 2, 'Vegetables': 0, 'Fruits': 0, 'Protein': 0, 'Dairy': 1}}
+	lunches = 	{	1: {'Grain': 2, 'Vegetables': 1, 'Fruits': 0.5, 'Protein': 0, 'Dairy': 1},
+					2: {'Grain': 2, 'Vegetables': 0, 'Fruits': 1, 'Protein': 3, 'Dairy': 2},
+					3: {'Grain': 2, 'Vegetables': 0.75, 'Fruits': 0, 'Protein': 3, 'Dairy': 0.5}}
+	snacks = 	{	1: {'Grain': 0, 'Vegetables': 1, 'Fruits': 0.5, 'Protein': 2, 'Dairy': 0},
+					2: {'Grain': 0, 'Vegetables': 0, 'Fruits': 0, 'Protein': 1, 'Dairy': float(4/3)},
+					3: {'Grain': 0, 'Vegetables': 0, 'Fruits': 1, 'Protein': 1, 'Dairy': 1}}
+	dinners = 	{	1: {'Grain': 0, 'Vegetables': 2, 'Fruits': 0, 'Protein': 3, 'Dairy': 0},
+					2: {'Grain': 0, 'Vegetables': 1.5, 'Fruits': 0, 'Protein': 1, 'Dairy': float(2/3)},
+					3: {'Grain': 2, 'Vegetables': 1, 'Fruits': 0, 'Protein': float(1/2), 'Dairy': 2}}
+
+	df.set_index(['FoodGroup'], inplace = True)
+
+	return render_template('frame.html', frame = df.style.format({c: html_input(c) for c in df.columns}).render())
+
+
+@app.route('/csv/<file>', methods = ['GET', 'POST'])
+def serve_csv(file):
+	import requests, io, sys
+	s = requests.get('http://localhost:5000/static/data/' + file).content
+	print(s, file = sys.stderr)
+	# df = pd.read_csv(io.StringIO(s.decode('utf-8')))
+	# return render_template('frame.html', frame = df.style.format({c: html_input(c) for c in df.columns}).render())
+
 
 
 if __name__ == '__main__':
 	app.run(port = 5000, threaded = True, debug = True)
-
-'''
-psql --username=postgres
-SELECT * FROM random_table LIMIT 50;
-semicolon is critical
-
-
-How would this work?
-We have the Tableau Dashboard connected to a PostgreSQL database
-We have the "gold standard" data in the database
-We also have a copy of all tables to which the tableau dashboard is connected
-Every time we run a scenario, we mess with the copied data, meaning we can always reset it to the gold standard
-
-		# sys.stderr.write('Successful'); sys.stderr.write('\n')
-		# output_message = "Successful"
-		# return render_template('home.html', message = output_message)
-
-
-		# df_new = pd.DataFrame()
-		# for item in request.values.lists():
-		# 	df_new[str(item[0])] = pd.Series(item[1])
-
-try:
-	# conn = psycopg2.connect("dbname='postgres' user='postgres' host='localhost' password='password'")
-	conn = psycopg2.connect("dbname='" + DBNAME + "' user='" + USERNAME + "' host='" + HOST + "' password='" + PASSWORD + "'")
-	print("Connected successfully!")
-except:
-	print("I am unable to connect to the database")
-
-'''
-
-
-
-
 
 '''
 

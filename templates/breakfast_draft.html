@@ -56,7 +56,8 @@
 				} else {
 					horiz_data = localStorage.getItem("horiz_data");
 				}
-			drawStackedBar(meal);
+			/*drawStackedBar(meal);*/
+			drawStackedBar();
 			console.log(meal);
 			drawHorizontalBar(horiz_data);
 			console.log(horiz_data);
@@ -80,18 +81,41 @@
 		<script>getMeal();</script>
 
 		<script>
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		function update(){
-			setMeal();
-			drawStackedBar(localStorage.getItem("last_meal"));
-			drawHorizontalBar(localStorage.getItem("horiz_data"));
+
 			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+			$.getJSON($SCRIPT_ROOT + '/write/', {
+				data :   localStorage.getItem("button_value"),
+				meal :   'Breakfast',
+				}, function(data) {
+					console.log(data.result);
+				});
+/*
+			$.getJSON($SCRIPT_ROOT + '/write_horiz/', {
+				data :   localStorage.getItem("button_value"),
+				meal :   'Breakfast',
+				}, function(data) {
+					console.log(data.result);
+				});*/
+
+			setMeal();
+			/*drawStackedBar(localStorage.getItem("last_meal"));*/
+			drawStackedBar();
+			drawHorizontalBar(localStorage.getItem("horiz_data"));
+			/*localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);*/
+
+			
+
 			
 			var b = document.getElementById('next_page');
 			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2){
-				b.href = "/soccer_good"
+				/*b.href = "/soccer_good"*/
+				b.href = "/soccer_good/" + $('input[name="M1P1"]').attr("value")
 			}
 			else if (localStorage.getItem("button_value") == 3){
-				b.href = "/soccer_bad"
+				/*b.href = "/soccer_bad"*/
+				b.href = "/soccer_bad/" + $('input[name="M1P1"]').attr("value")
 			}
 			localStorage.setItem("breakfast", document.querySelector('input[name="M1P1"]:checked').value);
 		}
@@ -120,6 +144,7 @@
 		<p3 style = "position:absolute; left:1030px; top:800px;">Froot Loops<span3>1 cup of cereal 1 cup 1% of milk</span3></p3>
 
 		<a class="btn" href="/setup" style="position: absolute; top: 750px; left:  1370px;">Back</a>
+
 	</div>
 </div>
 {% endblock %}

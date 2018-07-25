@@ -19,8 +19,11 @@ function drawZoomableSunburst(fileString) {
     zoomableSunburst = new D3WRAP.ZoomableSunburst("#chart1", {strLength: 20}, 350, fileString);
 }
 
-function drawStackedBar(buttonval) {
-    stackedBar = new D3WRAP1.StackedBar("#chart2", buttonval);
+/*function drawStackedBar(buttonval) {*/
+function drawStackedBar() {
+    /*stackedBar = new D3WRAP1.StackedBar("#chart2", buttonval);*/
+    stackedBar = new D3WRAP1.StackedBar("#chart2");
+    /*stackedBar = new D3WRAP1.StackedBar("#chart2", 'False');*/
 }
 
 function drawHorizontalBar(meal_data) {

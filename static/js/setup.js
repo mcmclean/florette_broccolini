@@ -22,6 +22,7 @@ function drawZoomableSunburst(fileString) {
 
 function drawStackedBar(buttonval) {
     stackedBar = new D3WRAP1.StackedBar("#chart2", buttonval);
+    /*stackedBar = new D3WRAP1.StackedBar("#chart2", 'True');*/
 }
 
 function drawHorizontalBar(meal_data) {

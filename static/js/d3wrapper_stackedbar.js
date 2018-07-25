@@ -1,13 +1,20 @@
 var D3WRAP1 = { REVISION: '1' };
 
-D3WRAP1.StackedBar = function(container, buttonval) {
+/*D3WRAP1.StackedBar = function(container, buttonval) {*/
+/*D3WRAP1.StackedBar = function(container, setup) {*/
+D3WRAP1.StackedBar = function(container) {
     this.container = container;
 	//this.dataset = dataset;
     //this.params = params;
 	var self = this;
 	
 	/*var file_path = "data/" + buttonval + ".csv";*/ /* MACON EDIT 7/15/18 */
-  var file_path = "/static/data/" + buttonval + ".csv";
+  
+  /*var file_path = "/static/data/" + buttonval + ".csv";*/ /*MACON EDIT 7/24/18*/
+
+  var file_path = "/curr_frame";
+
+  /*var file_path = "/curr_frame/" + setup;*/
     
     var margin = {top: 10, right: 20, bottom: 30, left: 60},
         width = 575 - margin.left - margin.right,

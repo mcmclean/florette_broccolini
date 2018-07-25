@@ -40,7 +40,8 @@
 				var meal_init = "meals";
 				localStorage.setItem("meal", meal_init);
 				var prev_horiz_data = ".66,.55,.62";
-				drawStackedBar(meal_init);
+				/*drawStackedBar(meal_init);*/
+				drawStackedBar();
 				var horiz_array_test = prev_horiz_data.split(',');
 				for(a in horiz_array_test){horiz_array_test[a] = parseFloat(horiz_array_test[a]);}
 				var graph_array_1 = [0,0,0];
@@ -83,11 +84,22 @@
 		<script>getMeal();</script>
 
 		<script>
+			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 			function update(){
-				setMeal();
-				drawStackedBar(localStorage.getItem("meal"));
-				drawHorizontalBar(localStorage.getItem("graph_string"));
+							
 				localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+				$.getJSON($SCRIPT_ROOT + '/write_setup/', {
+					data :   localStorage.getItem("button_value"),
+					meal :   'Setup',
+					}, function(data) {
+						console.log(data.result);
+					});
+
+				setMeal();
+				/*drawStackedBar(localStorage.getItem("meal"));*/
+				drawStackedBar();
+				drawHorizontalBar(localStorage.getItem("graph_string"));
+				/*localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);*/
 			}
 		</script>
 

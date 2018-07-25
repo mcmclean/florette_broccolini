@@ -179,16 +179,29 @@
 		<script>getMeal();</script>
 
 		<script>
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		function update(){
+
+			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+			$.getJSON($SCRIPT_ROOT + '/write/', {
+				data :   localStorage.getItem("button_value"),
+				meal :   'Lunch',
+				}, function(data) {
+					console.log(data.result);
+				});
+
+
 			setMeal();
-			drawStackedBar(localStorage.getItem("last_meal"));
+			/*drawStackedBar(localStorage.getItem("last_meal"));*/
+			drawStackedBar();
 			drawHorizontalBar(localStorage.getItem("graph_string"));
 			localStorage.setItem("last_page", "2");
-			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
+			/*localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);*/
 			
 			var b = document.getElementById('next_page');
 			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2 || localStorage.getItem("button_value") == 3){
-				b.href = "/snack_draft"
+				/*b.href = "/snack_draft"*/
+				b.href = "/snack_draft/" + $('input[name="M1P1"]').attr("value")
 			}
 			localStorage.setItem("lunch", document.querySelector('input[name="M1P1"]:checked').value);
 		}

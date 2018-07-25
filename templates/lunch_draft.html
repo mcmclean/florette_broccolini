@@ -182,6 +182,9 @@
 		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		function update(){
 
+
+			setMeal();
+
 			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
 			$.getJSON($SCRIPT_ROOT + '/write/', {
 				data :   localStorage.getItem("button_value"),
@@ -190,9 +193,6 @@
 					console.log(data.result);
 				});
 
-
-			setMeal();
-			/*drawStackedBar(localStorage.getItem("last_meal"));*/
 			drawStackedBar();
 			drawHorizontalBar(localStorage.getItem("graph_string"));
 			localStorage.setItem("last_page", "2");

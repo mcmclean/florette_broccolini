@@ -75,7 +75,7 @@
 				if(meal == 3){horiz_data = ".1325,.1389,.625";}
 				localStorage.setItem("horiz_data", horiz_data);
 				d3.select("#chart3").selectAll("svg").remove();	
-				console.log(horiz_data);		
+				console.log(horiz_data);
 			}	
 		</script>
 		<script>getMeal();</script>
@@ -83,6 +83,8 @@
 		<script>
 		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		function update(){
+
+			setMeal();
 
 			localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);
 			$.getJSON($SCRIPT_ROOT + '/write/', {
@@ -99,8 +101,6 @@
 					console.log(data.result);
 				});*/
 
-			setMeal();
-			/*drawStackedBar(localStorage.getItem("last_meal"));*/
 			drawStackedBar();
 			drawHorizontalBar(localStorage.getItem("horiz_data"));
 			/*localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);*/

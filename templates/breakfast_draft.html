@@ -93,8 +93,8 @@
 				}, function(data) {
 					console.log(data.result);
 				});
-/*
-			$.getJSON($SCRIPT_ROOT + '/write_horiz/', {
+
+			/*$.getJSON($SCRIPT_ROOT + '/write_horiz/', {
 				data :   localStorage.getItem("button_value"),
 				meal :   'Breakfast',
 				}, function(data) {
@@ -104,17 +104,12 @@
 			drawStackedBar();
 			drawHorizontalBar(localStorage.getItem("horiz_data"));
 			/*localStorage.setItem("button_value", document.querySelector('input[name="M1P1"]:checked').value);*/
-
-			
-
 			
 			var b = document.getElementById('next_page');
 			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2){
-				/*b.href = "/soccer_good"*/
 				b.href = "/soccer_good/" + $('input[name="M1P1"]').attr("value")
 			}
 			else if (localStorage.getItem("button_value") == 3){
-				/*b.href = "/soccer_bad"*/
 				b.href = "/soccer_bad/" + $('input[name="M1P1"]').attr("value")
 			}
 			localStorage.setItem("breakfast", document.querySelector('input[name="M1P1"]:checked').value);

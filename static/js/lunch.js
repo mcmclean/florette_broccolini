@@ -10,22 +10,15 @@ function pageIsLoaded() {
 
 // project initialization function
 function d3ProjectInit() {
-	
-        drawZoomableSunburst("lunch");
-        //drawStackedBar(0);
-        //drawHorizontalBar();
+    drawZoomableSunburst("lunch");
 }
 
 function drawZoomableSunburst(fileString) {
     zoomableSunburst = new D3WRAP.ZoomableSunburst("#chart1", {strLength: 10}, 300, fileString);
 }
 
-/*function drawStackedBar(buttonval) {
-    stackedBar = new D3WRAP1.StackedBar("#chart2", buttonval);
-}*/
 function drawStackedBar() {
     stackedBar = new D3WRAP1.StackedBar("#chart2");
-    /*stackedBar = new D3WRAP1.StackedBar("#chart2", 'False');*/
 }
 
 function drawHorizontalBar(meal_data) {

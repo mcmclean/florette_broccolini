@@ -141,7 +141,6 @@
 			
 			var b = document.getElementById('next_page');
 			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2 || localStorage.getItem("button_value") == 3){
-				/*b.href = "/summary"*/
 				b.href = "/summary/" + $('input[name="M1P1"]').attr("value")
 			}
 			localStorage.setItem("dinner", document.querySelector('input[name="M1P1"]:checked').value);

@@ -28,17 +28,17 @@ meals_dict = {
 }
 
 
-breakfasts_horiz = 	{	1: ".2963,.1667,.5575",	2: ".2213,.42,.3488",	3: ".1325,.1389,.625"	}
-lunches_horiz =		{	1: ".2934,.2811,.5063",	2: ".4084,.7056,.5088",	3: ".4713,.6789,.1358"	}
-snacks_horiz =		{	1: ".2238,.6389,.01",	2: ".2038,.1117,.625",	3: ".3206,.3722,.9125"	}
-dinners_horiz =		{	1: ".2588,.3556,.2788",	2: ".2563,.2,.125",		3: ".435,.6111,.855"	}
+# breakfasts_horiz = 	{	1: ".2963,.1667,.5575",	2: ".2213,.42,.3488",	3: ".1325,.1389,.625"	}
+# lunches_horiz =		{	1: ".2934,.2811,.5063",	2: ".4084,.7056,.5088",	3: ".4713,.6789,.1358"	}
+# snacks_horiz =		{	1: ".2238,.6389,.01",	2: ".2038,.1117,.625",	3: ".3206,.3722,.9125"	}
+# dinners_horiz =		{	1: ".2588,.3556,.2788",	2: ".2563,.2,.125",		3: ".435,.6111,.855"	}
 
-meals_dict_horiz = {	
-	'Breakfast': breakfasts_horiz,
-	'Lunch': lunches_horiz,
-	'Snack': snacks_horiz,
-	'Dinner': dinners_horiz
-}
+# meals_dict_horiz = {	
+# 	'Breakfast': breakfasts_horiz,
+# 	'Lunch': lunches_horiz,
+# 	'Snack': snacks_horiz,
+# 	'Dinner': dinners_horiz
+# }
 
 ################################################
 
@@ -65,19 +65,11 @@ def setup():
 def breakfast_draft():
 	return render_template('breakfast_draft.html', title = 'Breakfast')
 
-# @app.route('/soccer_good', methods = ['GET'])
-# def soccer_good():
-# 	return render_template('soccer_good.html', title = 'Soccer - Good')
-
 @app.route('/soccer_good/<choice>', methods = ['GET'])
 def soccer_good(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 1, body=breakfasts[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('soccer_good.html', title = 'Soccer - Good')
-
-# @app.route('/soccer_bad', methods = ['GET'])
-# def soccer_bad():
-# 	return render_template('soccer_bad.html', title = 'Soccer - Bad')
 
 @app.route('/soccer_bad/<choice>', methods = ['GET'])
 def soccer_bad(choice):
@@ -89,29 +81,17 @@ def soccer_bad(choice):
 def lunch_draft():
 	return render_template('lunch_draft.html', title = 'Lunch')
 
-# @app.route('/snack_draft', methods = ['GET'])
-# def snack_draft():
-# 	return render_template('snack_draft.html', title = 'Snack')
-
 @app.route('/snack_draft/<choice>', methods = ['GET'])
 def snack_draft(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 2, body=lunches[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('snack_draft.html', title = 'Snack')
 
-# @app.route('/dinner_draft', methods = ['GET'])
-# def dinner_draft():
-# 	return render_template('dinner_draft.html', title = 'Dinner - Good')
-
 @app.route('/dinner_draft/<choice>', methods = ['GET'])
 def dinner_draft(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 3, body=snacks[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('dinner_draft.html', title = 'Dinner - Good')
-
-# @app.route('/dinner_draft_bad', methods = ['GET'])
-# def dinner_draft_bad():
-# 	return render_template('dinner_draft_bad.html', title = 'Dinner - Bad')
 
 @app.route('/dinner_draft_bad/<choice>', methods = ['GET'])
 def dinner_draft_bad(choice):
@@ -123,10 +103,6 @@ def dinner_draft_bad(choice):
 def info():
 	return render_template('info.html', title = 'Info')
 
-# @app.route('/summary', methods = ['GET'])
-# def summary():
-# 	return render_template('summary.html', title = 'Summary')
-
 @app.route('/summary/<choice>', methods = ['GET'])
 def summary(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 4, body=dinners[int(choice)])
@@ -136,15 +112,6 @@ def summary(choice):
 @app.route('/static/<path:path>')
 def send_static_file_(path):
 	return send_from_directory('static', path)
-
-# @app.route('/frame')
-# def empty_frame():
-# 	df = pd.DataFrame(columns = ['FoodGroup', 'Breakfast', 'Lunch', 'Snack', 'Dinner'])
-# 	df['FoodGroup'] = pd.Series(['Grain', 'Vegetables', 'Fruits', 'Protein', 'Dairy'])
-# 	for col in [x for x in df.columns if x is not 'FoodGroup']:
-# 		df[col] = pd.Series([0 for x in range(len(list(df['FoodGroup'].values)))])
-# 	df.set_index(['FoodGroup'], inplace = True)
-# 	return render_template('frame.html', frame = df.style.format({c: html_input(c) for c in df.columns}).render())
 
 @app.route('/write/', methods = ['GET', 'POST'])
 def write():
@@ -161,6 +128,96 @@ def write():
 		sys.stderr.write("POST"); sys.stderr.write("\n")
 		return ''
 
+@app.route('/curr_frame')
+def curr_frame():
+	df = pd.DataFrame(columns = ['FoodGroup', 'Breakfast', 'Lunch', 'Snack', 'Dinner'])
+	df['FoodGroup'] = pd.Series(['Grain', 'Vegetables', 'Fruits', 'Protein', 'Dairy'])
+	for col in [x for x in df.columns if x is not 'FoodGroup']:
+		df[col] = pd.Series([0 for x in range(len(list(df['FoodGroup'].values)))])
+	df.set_index(['FoodGroup'], inplace = True)
+
+	# add in values from ES instance
+	ids = {'Breakfast': 1, 'Lunch': 2, 'Snack': 3, 'Dinner': 4}
+	for meal in list(meals_dict.keys()):
+		try:
+			res = es.get(index="meal_choices", doc_type='Choice', id=ids[meal])
+			for k, v in res['_source'].items():
+				df[meal].loc[k] = float(v)
+		except:
+			pass
+
+	df = df[['Breakfast', 'Lunch', 'Snack', 'Dinner']]
+	resp = make_response(df.to_csv())
+	resp.headers["Content-Disposition"] = "attachment; filename=choices.csv"
+	resp.headers["Content-Type"] = "text/csv"
+	return resp
+
+
+
+@app.route('/write_setup/', methods = ['GET', 'POST']) # fix this
+def write_setup():
+	if request.method == "GET":
+		choice	= request.args.get('data')
+		meal	= request.args.get('meal')
+		setup_dict = {
+			1: {'Grain': 1.5, 'Vegetables': 1, 'Fruits': 1, 'Protein': 2, 'Dairy': 0},
+			2: {'Grain': 2, 'Vegetables': 0, 'Fruits': 0, 'Protein': 2, 'Dairy': 2},
+			3: {'Grain': 1, 'Vegetables': 0.5, 'Fruits': 1, 'Protein': 0, 'Dairy': 0}
+		}
+		res = es.index(index="meal_choices", doc_type= 'Choice', id=5, body=setup_dict[int(choice)])
+		return ''
+	else:
+		sys.stderr.write("POST"); sys.stderr.write("\n")
+		return ''
+
+'''
+http://localhost:5000/static/data/1.csv gets 1.csv
+'''
+
+if __name__ == '__main__':
+	app.run(port = 5000, threaded = True, debug = True)
+
+
+
+''' moving stuff around 7/24
+
+# @app.route('/soccer_good', methods = ['GET'])
+# def soccer_good():
+# 	return render_template('soccer_good.html', title = 'Soccer - Good')
+
+# @app.route('/soccer_bad', methods = ['GET'])
+# def soccer_bad():
+# 	return render_template('soccer_bad.html', title = 'Soccer - Bad')
+
+
+
+# @app.route('/snack_draft', methods = ['GET'])
+# def snack_draft():
+# 	return render_template('snack_draft.html', title = 'Snack')
+
+# @app.route('/dinner_draft', methods = ['GET'])
+# def dinner_draft():
+# 	return render_template('dinner_draft.html', title = 'Dinner - Good')
+
+# @app.route('/dinner_draft_bad', methods = ['GET'])
+# def dinner_draft_bad():
+# 	return render_template('dinner_draft_bad.html', title = 'Dinner - Bad')
+
+# @app.route('/summary', methods = ['GET'])
+# def summary():
+# 	return render_template('summary.html', title = 'Summary')
+
+
+# @app.route('/frame')
+# def empty_frame():
+# 	df = pd.DataFrame(columns = ['FoodGroup', 'Breakfast', 'Lunch', 'Snack', 'Dinner'])
+# 	df['FoodGroup'] = pd.Series(['Grain', 'Vegetables', 'Fruits', 'Protein', 'Dairy'])
+# 	for col in [x for x in df.columns if x is not 'FoodGroup']:
+# 		df[col] = pd.Series([0 for x in range(len(list(df['FoodGroup'].values)))])
+# 	df.set_index(['FoodGroup'], inplace = True)
+# 	return render_template('frame.html', frame = df.style.format({c: html_input(c) for c in df.columns}).render())
+
+
 
 # @app.route('/write_horiz/', methods = ['GET', 'POST'])
 # def write_horiz():
@@ -173,6 +230,7 @@ def write():
 # 	else:
 # 		sys.stderr.write("POST"); sys.stderr.write("\n")
 # 		return ''
+
 
 
 
@@ -251,28 +309,9 @@ def curr_frame():
 	# 	return resp
 
 
-@app.route('/write_setup/', methods = ['GET', 'POST']) # fix this
-def write_setup():
-	if request.method == "GET":
-		choice	= request.args.get('data')
-		meal	= request.args.get('meal')
-		setup_dict = {
-			1: {'Grain': 1.5, 'Vegetables': 1, 'Fruits': 1, 'Protein': 2, 'Dairy': 0},
-			2: {'Grain': 2, 'Vegetables': 0, 'Fruits': 0, 'Protein': 2, 'Dairy': 2},
-			3: {'Grain': 1, 'Vegetables': 0.5, 'Fruits': 1, 'Protein': 0, 'Dairy': 0}
-		}
-		res = es.index(index="meal_choices", doc_type= 'Choice', id=5, body=setup_dict[int(choice)])
-		return ''
-	else:
-		sys.stderr.write("POST"); sys.stderr.write("\n")
-		return ''
-
-'''
-http://localhost:5000/static/data/1.csv gets 1.csv
 '''
 
-if __name__ == '__main__':
-	app.run(port = 5000, threaded = True, debug = True)
+
 
 '''
 

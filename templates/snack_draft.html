@@ -170,11 +170,9 @@
 			
 			var b = document.getElementById('next_page');
 			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2){
-				/*b.href = "/dinner_draft"*/
 				b.href = "/dinner_draft/" + $('input[name="M1P1"]').attr("value")
 			}
 			if(localStorage.getItem("button_value") == 3){
-				/*b.href = "/dinner_draft_bad"*/
 				b.href = "/dinner_draft_bad/" + $('input[name="M1P1"]').attr("value")
 			}
 			

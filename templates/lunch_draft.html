@@ -200,7 +200,6 @@
 			
 			var b = document.getElementById('next_page');
 			if(localStorage.getItem("button_value") == 1 || localStorage.getItem("button_value") == 2 || localStorage.getItem("button_value") == 3){
-				/*b.href = "/snack_draft"*/
 				b.href = "/snack_draft/" + $('input[name="M1P1"]').attr("value")
 			}
 			localStorage.setItem("lunch", document.querySelector('input[name="M1P1"]:checked').value);

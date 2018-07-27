@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pandas as pd, numpy as np
-from flask import Flask, render_template, redirect, url_for, request, send_from_directory, make_response
+from flask import Flask, render_template, request, send_from_directory, make_response
 import sys
 
 from elasticsearch import Elasticsearch
@@ -27,28 +27,11 @@ meals_dict = {
 	'Dinner': dinners
 }
 
-
-# breakfasts_horiz = 	{	1: ".2963,.1667,.5575",	2: ".2213,.42,.3488",	3: ".1325,.1389,.625"	}
-# lunches_horiz =		{	1: ".2934,.2811,.5063",	2: ".4084,.7056,.5088",	3: ".4713,.6789,.1358"	}
-# snacks_horiz =		{	1: ".2238,.6389,.01",	2: ".2038,.1117,.625",	3: ".3206,.3722,.9125"	}
-# dinners_horiz =		{	1: ".2588,.3556,.2788",	2: ".2563,.2,.125",		3: ".435,.6111,.855"	}
-
-# meals_dict_horiz = {	
-# 	'Breakfast': breakfasts_horiz,
-# 	'Lunch': lunches_horiz,
-# 	'Snack': snacks_horiz,
-# 	'Dinner': dinners_horiz
-# }
-
 ################################################
-
-def html_input(c):
-	# return '<input name="{}" value="{{}}" />'.format(c)
-	return '<input class="frame_input" name="{}" value="{{}}" />'.format(c)
 
 app = Flask(__name__, static_url_path = '/static')
 
-@app.route('/', methods = ['GET'])
+@app.route('/')
 def hello_world():
 	try:
 		es.indices.delete(index='meal_choices')
@@ -57,76 +40,86 @@ def hello_world():
 	es.indices.create(index='meal_choices')
 	return render_template('title.html', title = 'Test')
 
-@app.route('/setup', methods = ['GET'])
+
+@app.route('/setup')
 def setup():
 	return render_template('setup.html', title = 'Setup')
 
-@app.route('/breakfast_draft', methods = ['GET'])
+
+@app.route('/breakfast_draft')
 def breakfast_draft():
 	return render_template('breakfast_draft.html', title = 'Breakfast')
 
-@app.route('/soccer_good/<choice>', methods = ['GET'])
+
+@app.route('/soccer_good/<choice>')
 def soccer_good(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 1, body=breakfasts[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('soccer_good.html', title = 'Soccer - Good')
 
-@app.route('/soccer_bad/<choice>', methods = ['GET'])
+
+@app.route('/soccer_bad/<choice>')
 def soccer_bad(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 1, body=breakfasts[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('soccer_bad.html', title = 'Soccer - Bad')
 
-@app.route('/lunch_draft', methods = ['GET'])
+
+@app.route('/lunch_draft')
 def lunch_draft():
 	return render_template('lunch_draft.html', title = 'Lunch')
 
-@app.route('/snack_draft/<choice>', methods = ['GET'])
+
+@app.route('/snack_draft/<choice>')
 def snack_draft(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 2, body=lunches[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('snack_draft.html', title = 'Snack')
 
-@app.route('/dinner_draft/<choice>', methods = ['GET'])
+
+@app.route('/dinner_draft/<choice>')
 def dinner_draft(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 3, body=snacks[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('dinner_draft.html', title = 'Dinner - Good')
 
-@app.route('/dinner_draft_bad/<choice>', methods = ['GET'])
+
+@app.route('/dinner_draft_bad/<choice>')
 def dinner_draft_bad(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 3, body=snacks[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('dinner_draft_bad.html', title = 'Dinner - Bad')
 
-@app.route('/info', methods = ['GET'])
+
+@app.route('/info')
 def info():
 	return render_template('info.html', title = 'Info')
 
-@app.route('/summary/<choice>', methods = ['GET'])
+
+@app.route('/summary/<choice>')
 def summary(choice):
 	res = es.index(index="meal_choices", doc_type='Choice', id = 4, body=dinners[int(choice)])
 	print(res['result'], file=sys.stderr)
 	return render_template('summary.html', title = 'Summary')
 
+
 @app.route('/static/<path:path>')
 def send_static_file_(path):
 	return send_from_directory('static', path)
+	# http://localhost:5000/static/data/1.csv gets 1.csv
 
-@app.route('/write/', methods = ['GET', 'POST'])
+
+@app.route('/write/')
 def write():
-	if request.method == "GET":
-		choice	= request.args.get('data')
-		meal	= request.args.get('meal')
-		print("WRITING", file=sys.stderr)
-		print(int(choice), file=sys.stderr)
-		print(str(meal), file=sys.stderr)
-		ids = {'Breakfast': 1, 'Lunch': 2, 'Snack': 3, 'Dinner': 4}
-		res = es.index(index="meal_choices", doc_type= 'Choice', id=ids[meal], body=meals_dict[str(meal)][int(choice)])
-		return ''
-	else:
-		sys.stderr.write("POST"); sys.stderr.write("\n")
-		return ''
+	choice	= request.args.get('data')
+	meal	= request.args.get('meal')
+	print("WRITING", file=sys.stderr)
+	print(int(choice), file=sys.stderr)
+	print(str(meal), file=sys.stderr)
+	ids = {'Breakfast': 1, 'Lunch': 2, 'Snack': 3, 'Dinner': 4}
+	res = es.index(index="meal_choices", doc_type= 'Choice', id=ids[meal], body=meals_dict[str(meal)][int(choice)])
+	return ''
+
 
 @app.route('/curr_frame')
 def curr_frame():
@@ -153,33 +146,44 @@ def curr_frame():
 	return resp
 
 
-
-@app.route('/write_setup/', methods = ['GET', 'POST']) # fix this
-def write_setup():
-	if request.method == "GET":
-		choice	= request.args.get('data')
-		meal	= request.args.get('meal')
-		setup_dict = {
-			1: {'Grain': 1.5, 'Vegetables': 1, 'Fruits': 1, 'Protein': 2, 'Dairy': 0},
-			2: {'Grain': 2, 'Vegetables': 0, 'Fruits': 0, 'Protein': 2, 'Dairy': 2},
-			3: {'Grain': 1, 'Vegetables': 0.5, 'Fruits': 1, 'Protein': 0, 'Dairy': 0}
-		}
-		res = es.index(index="meal_choices", doc_type= 'Choice', id=5, body=setup_dict[int(choice)])
-		return ''
-	else:
-		sys.stderr.write("POST"); sys.stderr.write("\n")
-		return ''
-
-'''
-http://localhost:5000/static/data/1.csv gets 1.csv
-'''
-
 if __name__ == '__main__':
 	app.run(port = 5000, threaded = True, debug = True)
 
 
 
 ''' moving stuff around 7/24
+
+def html_input(c):
+	# return '<input name="{}" value="{{}}" />'.format(c)
+	return '<input class="frame_input" name="{}" value="{{}}" />'.format(c)
+
+# @app.route('/write_setup/', methods = ['GET', 'POST']) # fix this
+# def write_setup():
+# 	if request.method == "GET":
+# 		choice	= request.args.get('data')
+# 		meal	= request.args.get('meal')
+# 		setup_dict = {
+# 			1: {'Grain': 1.5, 'Vegetables': 1, 'Fruits': 1, 'Protein': 2, 'Dairy': 0},
+# 			2: {'Grain': 2, 'Vegetables': 0, 'Fruits': 0, 'Protein': 2, 'Dairy': 2},
+# 			3: {'Grain': 1, 'Vegetables': 0.5, 'Fruits': 1, 'Protein': 0, 'Dairy': 0}
+# 		}
+# 		res = es.index(index="meal_choices", doc_type= 'Choice', id=5, body=setup_dict[int(choice)])
+# 		return ''
+# 	else:
+# 		sys.stderr.write("POST"); sys.stderr.write("\n")
+# 		return ''
+
+# breakfasts_horiz = 	{	1: ".2963,.1667,.5575",	2: ".2213,.42,.3488",	3: ".1325,.1389,.625"	}
+# lunches_horiz =		{	1: ".2934,.2811,.5063",	2: ".4084,.7056,.5088",	3: ".4713,.6789,.1358"	}
+# snacks_horiz =		{	1: ".2238,.6389,.01",	2: ".2038,.1117,.625",	3: ".3206,.3722,.9125"	}
+# dinners_horiz =		{	1: ".2588,.3556,.2788",	2: ".2563,.2,.125",		3: ".435,.6111,.855"	}
+
+# meals_dict_horiz = {	
+# 	'Breakfast': breakfasts_horiz,
+# 	'Lunch': lunches_horiz,
+# 	'Snack': snacks_horiz,
+# 	'Dinner': dinners_horiz
+# }
 
 # @app.route('/soccer_good', methods = ['GET'])
 # def soccer_good():
